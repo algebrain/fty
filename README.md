@@ -66,7 +66,7 @@ Add `fty-pack` and `fty-unpack` scripts to your project's `package.json` for eas
   "name": "my-project",
   "version": "1.0.0",
   "scripts": {
-    "fty-pack": "fty-pack . -o package.fty.yaml --gitignore -i node_modules,dist",
+    "fty-pack": "fty-pack . -o package.fty.yaml --gitignore -i \".git,node_modules,dist,pnpm-lock.yaml\"",
     "fty-unpack": "fty-unpack package.fty.yaml -o ."
   },
   "devDependencies": {
