@@ -6,8 +6,8 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
-    "pack": "node dist/fty-pack.js",
-    "unpack": "node dist/fty-unpack.js"
+    "fty-pack": "node dist/fty-pack.js",
+    "fty-unpack": "node dist/fty-unpack.js"
   },
   "keywords": [
     "fty",

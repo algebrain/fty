@@ -58,7 +58,7 @@ This will create `dist` directory with compiled JavaScript files.
 Use the `fty-pack` script to convert a directory into an FTY YAML file.
 
 ```bash
-npm run pack <directory_path> [options]
+npm run fty-pack <directory_path> [options]
 ```
 
 **Options:**
@@ -73,11 +73,11 @@ npm run pack <directory_path> [options]
 
   * Pack a directory named `my-project` into `my-project.fty.yaml`:
     ```bash
-    npm run pack my-project
+    npm run fty-pack my-project
     ```
   * Pack `my-project`, ignoring `node_modules` and `dist` folders, and using `.gitignore` rules, saving to `output.yaml`:
     ```bash
-    npm run pack my-project -i node_modules,dist --gitignore -o output.yaml
+    npm run fty-pack my-project -i node_modules,dist --gitignore -o output.yaml
     ```
 
 ### Unpacking an FTY File
@@ -85,7 +85,7 @@ npm run pack <directory_path> [options]
 Use the `fty-unpack` script to reconstruct a directory from an FTY YAML file.
 
 ```bash
-npm run unpack <fty_file_path> [options]
+npm run fty-unpack <fty_file_path> [options]
 ```
 
 **Options:**
@@ -98,7 +98,7 @@ npm run unpack <fty_file_path> [options]
 
   * Unpack `my_project.fty.yaml` into a new folder named `reconstructed_project`:
     ```bash
-    npm run unpack my_project.fty.yaml -o reconstructed_project
+    npm run fty-unpack my_project.fty.yaml -o reconstructed_project
     ```
 
 -----
