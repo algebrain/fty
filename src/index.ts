@@ -21,8 +21,8 @@ const ftyUtils = () => {
       return fs.readFileSync(gitignorePath, 'utf8')
         .split(/\r?\n/)
         .filter(line => line.trim() !== '' && !line.startsWith('#'))
-        .map(line => { // Normalizing patterns for Minimatch
-            if (line.startsWith('/')) return line.substring(1); // Remove leading slash for root patterns
+        .map(line => {
+            if (line.startsWith('/')) return line.substring(1);
             return line;
         });
     }
@@ -31,7 +31,6 @@ const ftyUtils = () => {
 
   const shouldIgnore = (entryPath: string, baseDir: string, ignorePatterns: string[]): boolean => {
     let relativePath = path.relative(baseDir, entryPath);
-
     if (relativePath === '') return false;
 
     const stats = fs.statSync(entryPath);
@@ -66,8 +65,7 @@ const ftyUtils = () => {
 
       if (stats.isFile()) {
         let content = fs.readFileSync(entryPath, 'utf8');
-        // НОВОЕ ИЗМЕНЕНИЕ: Нормализация окончаний строк
-        content = content.replace(/\r\n/g, '\n'); // Заменяем CRLF на LF
+        content = content.replace(/\r\n/g, '\n');
         return { name: entryName, data: content };
       } else if (stats.isDirectory()) {
         const children = fs.readdirSync(entryPath)
@@ -102,7 +100,13 @@ const ftyUtils = () => {
   return {
     packDirectory,
     unpackDirectory,
-    toYaml: (data: FTYObject[]) => yaml.dump(data),
+    toYaml: (data: FTYObject[]) => yaml.dump(data, {
+      styles: {
+        'tag:yaml.org,2002:str': 'literal' // Принудительно использовать буквальный стиль для всех строк
+      },
+      lineWidth: -1, // Отключаем перенос строк по ширине, чтобы не ломалось форматирование
+      noRefs: true // Отключаем ссылки, чтобы избежать алиасов для дублирующихся данных
+    }),
     fromYaml: (yamlString: string) => yaml.load(yamlString) as FTYObject[]
   };
 };
