@@ -27,99 +27,115 @@ FTY effectively transforms a complex directory into a manageable, shareable, and
 
 The core of these utilities is the FTY format itself. You can find detailed specifications of the FTY format in both English and Russian:
 
-  * **English Specification:** [https://rentry.co/65dfo4ed](https://rentry.co/65dfo4ed)
-  * **Russian Specification:** [https://rentry.co/2w6nz67k](https://rentry.co/2w6nz67k)
+* **English Specification:** [https://rentry.co/65dfo4ed](https://rentry.co/65dfo4ed)
+* **Russian Specification:** [https://rentry.co/2w6nz67k](https://rentry.co/2w6nz67k)
 
 -----
 
 ## Features
 
-  * **Pack Directories:** Convert a physical directory into an FTY-formatted YAML string or file.
-  * **Unpack FTY:** Reconstruct a physical directory from an FTY-formatted YAML string or file.
-  * **Flexible Ignoring:** Specify files and folders to ignore during packing using custom patterns.
-  * **`.gitignore` Support:** Automatically integrate `.gitignore` rules for seamless project packing.
-  * **Compact & Readable Code:** Written in TypeScript, favoring arrow functions and object-returning functions for clean, maintainable code.
+* **Pack Directories:** Convert a physical directory into an FTY-formatted YAML string or file.
+* **Unpack FTY:** Reconstruct a physical directory from an FTY-formatted YAML string or file.
+* **Flexible Ignoring:** Specify files and folders to ignore during packing using custom patterns.
+* **`.gitignore` Support:** Automatically integrate `.gitignore` rules for seamless project packing.
+* **Compact & Readable Code:** Written in TypeScript, favoring arrow functions and object-returning functions for clean, maintainable code.
 
 -----
 
 ## Installation
 
-1.  **Clone the repository** (or copy the `src` folder content into your project).
-2.  **Install dependencies**:
+**In your project where you want to use FTY Utilities:**
+
+1.  **Install FTY Utilities** as a development dependency:
     ```bash
-    npm install
+    npm install --save-dev fty-utils
     # or
-    yarn add
+    pnpm add --save-dev fty-utils
     ```
 
 -----
 
 ## Usage
 
-### Build the Utilities
+### Configure Your `package.json`
 
-First, compile the TypeScript source files:
+Add `fty-pack` and `fty-unpack` scripts to your project's `package.json` for easy access:
 
-```bash
-npm run build
-# or
-npx tsc
+```json
+{
+  "name": "my-project",
+  "version": "1.0.0",
+  "scripts": {
+    "fty-pack": "fty-pack . -o package.fty.yaml --gitignore -i node_modules,dist",
+    "fty-unpack": "fty-unpack package.fty.yaml -o ."
+  },
+  "devDependencies": {
+    "fty-utils": "^1.0.0"
+  }
+}
 ```
-
-This will create `dist` directory with compiled JavaScript files.
+* The `fty-pack` script will pack the current directory (`.`) into `package.fty.yaml`, ignoring typical development artifacts (`node_modules`, `dist`), and respecting `.gitignore` rules.
+* The `fty-unpack` script will unpack `package.fty.yaml` back into the current directory.
 
 ### Packing a Directory
 
-Use the `fty-pack` script to convert a directory into an FTY YAML file.
+From your project's root directory:
 
 ```bash
-npm run fty-pack <directory_path> [options]
+npm run fty-pack
+# or
+pnpm run fty-pack
 ```
 
-**Options:**
+You can also use `npx` (or `pnpm dlx`) to run the commands directly without defining them in `package.json` scripts:
 
-  * `<directory_path>`: The path to the directory you want to pack. This is the **only required argument**.
-  * `-o, --output <file>`: Specifies the output FTY file path. If omitted, the default is `<directory_name>.fty.yaml` in the current working directory.
-  * `-i, --ignore <patterns>`: A comma-separated list of patterns (e.g., `"node_modules,dist"`) to ignore during packing. These patterns are relative to the `<directory_path>`.
-  * `--gitignore`: If present, the packer will read the `.gitignore` file in the `<directory_path>` and apply its rules. The `.gitignore` file itself will be ignored.
-  * `-h, --help`: Display the help message.
+```bash
+npx fty-pack <directory_path> [options]
+# Example: npx fty-pack . -o my_project.fty.yaml --gitignore -i node_modules,dist
+```
 
-**Examples:**
+**CLI Options for `fty-pack`:**
 
-  * Pack a directory named `my-project` into `my-project.fty.yaml`:
-    ```bash
-    npm run fty-pack my-project
-    ```
-  * Pack `my-project`, ignoring `node_modules` and `dist` folders, and using `.gitignore` rules, saving to `output.yaml`:
-    ```bash
-    npm run fty-pack my-project -i node_modules,dist --gitignore -o output.yaml
-    ```
+* `<directory_path>`: The path to the directory you want to pack. This is the **only required argument**.
+* `-o, --output <file>`: Specifies the output FTY file path. If omitted, the default is `<directory_name>.fty.yaml` in the current working directory.
+* `-i, --ignore <patterns>`: A comma-separated list of patterns (e.g., `"node_modules,dist"`) to ignore during packing. These patterns are relative to the `<directory_path>`.
+* `--gitignore`: If present, the packer will read the `.gitignore` file in the `<directory_path>` and apply its rules. The `.gitignore` file itself will be ignored.
+* `-h, --help`: Display the help message.
 
 ### Unpacking an FTY File
 
-Use the `fty-unpack` script to reconstruct a directory from an FTY YAML file.
+From your project's root directory:
 
 ```bash
-npm run fty-unpack <fty_file_path> [options]
+npm run fty-unpack
+# or
+pnpm run fty-unpack
 ```
 
-**Options:**
+Or using `npx` (or `pnpm dlx`):
 
-  * `<fty_file_path>`: The path to the FTY YAML file you want to unpack. This is the **only required argument**.
-  * `-o, --output <directory>`: Specifies the target directory for unpacking. If omitted, the default is `unpacked_<file_name_without_ext>` in the current working directory (e.g., `unpacked_my_project`).
-  * `-h, --help`: Display the help message.
+```bash
+npx fty-unpack <fty_file_path> [options]
+# Example: npx fty-unpack package.fty.yaml -o .
+```
 
-**Example:**
+**CLI Options for `fty-unpack`:**
 
-  * Unpack `my_project.fty.yaml` into a new folder named `reconstructed_project`:
-    ```bash
-    npm run fty-unpack my_project.fty.yaml -o reconstructed_project
-    ```
+* `<fty_file_path>`: The path to the FTY YAML file you want to unpack. This is the **only required argument**.
+* `-o, --output <directory>`: Specifies the target directory for unpacking. If omitted, the default is `unpacked_<file_name_without_ext>` in the current working directory (e.g., `unpacked_my_project`).
+* `-h, --help`: Display the help message.
 
 -----
 
-## Development & Contribution
+## Development of `fty-utils`
 
-Feel free to explore the `src/index.ts` file for the core `packDirectory` and `unpackDirectory` logic. Contributions, bug reports, and feature requests are welcome\!
+If you are developing `fty-utils` itself:
+
+1.  **Clone the repository.**
+2.  **Install dependencies:** `npm install` (or `pnpm install`).
+3.  **Build the utilities:** `npm run build` (or `npx tsc`). This will compile the TypeScript source files in `src/` into JavaScript files in `dist/`.
+4.  **Run tests:** `npm run test`.
+
+Feel free to explore the `src/index.ts` file for the core `packDirectory` and `unpackDirectory` logic. Contributions, bug reports, and feature requests are welcome!
 
 -----

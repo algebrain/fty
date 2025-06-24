@@ -10,8 +10,8 @@ Every element within the file system (whether a file or a folder) is represented
 
 1.  **`name`** (string): The name of the file or folder.
 2.  **`data`** (string or array):
-      * If the element is a **file**, the `data` field contains a **string** with the complete content of that file.
-      * If the element is a **folder** (directory), the `data` field contains an **array** of YAML objects. Each object in this array represents a nested file or folder, following the same FTY structure.
+        * If the element is a **file**, the `data` field contains a **string** with the complete content of that file.
+        * If the element is a **folder** (directory), the `data` field contains an **array** of YAML objects. Each object in this array represents a nested file or folder, following the same FTY structure.
 
 **Example Structure**
 
@@ -31,7 +31,7 @@ Every element within the file system (whether a file or a folder) is represented
 
 **Features and Recommendations**
 
-  * **Encoding:** UTF-8 is recommended for file contents and names.
-  * **Empty Folders:** Empty folders are represented by a `data` array with zero elements (`[]`).
-  * **Multiline Content:** For files with multiline content, it's recommended to use YAML block style indicators (e.g., `|` for a literal block, `>` for a folded block) to improve readability.
-  * **Root Element:** The root of an FTY document is typically an array containing one or more top-level objects, representing root folders or files.
+* **Encoding:** UTF-8 is recommended for file contents and names.
+* **Empty Folders:** Empty folders are represented by a `data` array with zero elements (`[]`).
+* **Multiline Content:** For files with multiline content, it's recommended to use YAML block style indicators (e.g., `|` for a literal block, `>` for a folded block) to improve readability.
+* **Root Element:** The root of an FTY document is typically an array containing one or more top-level objects, representing root folders or files.

@@ -1,16 +1,14 @@
-import ftyUtils from './index';
+#!/usr/bin/env node
+import { packDirectory, toYaml } from './index'; // Импортируем из index
 import * as path from 'path';
 import * as fs from 'fs';
 
-const { packDirectory, toYaml } = ftyUtils;
-
-// Парсинг аргументов командной строки
 const args = process.argv.slice(2);
 
-const ftyPack = () => {
-  if (args.length === 0 || args[0] === '-h' || args[0] === '--help') {
+const runPack = (cliArgs: string[]) => {
+  if (cliArgs.length === 0 || cliArgs[0] === '-h' || cliArgs[0] === '--help') {
     console.log(`
-      Usage: node fty-pack.js <directory_path> [options]
+      Usage: fty-pack <directory_path> [options]
 
       Options:
         -o, --output <file>    Output FTY file path (default: <directory_name>.fty.yaml)
@@ -21,21 +19,22 @@ const ftyPack = () => {
     process.exit(0);
   }
 
-  const directoryPath = path.resolve(args[0]);
+  const directoryPathArg = cliArgs[0];
+  const directoryPath = path.resolve(directoryPathArg);
   let outputPath: string | undefined;
   let ignorePatterns: string[] = [];
   let useGitignore = false;
 
-  for (let i = 1; i < args.length; i++) {
-    const arg = args[i];
+  for (let i = 1; i < cliArgs.length; i++) {
+    const arg = cliArgs[i];
     switch (arg) {
       case '-o':
       case '--output':
-        outputPath = path.resolve(args[++i]);
+        outputPath = path.resolve(cliArgs[++i]);
         break;
       case '-i':
       case '--ignore':
-        ignorePatterns = args[++i].split(',').map(p => p.trim()).filter(p => p.length > 0);
+        ignorePatterns = cliArgs[++i].split(',').map(p => p.trim()).filter(p => p.length > 0);
         break;
       case '--gitignore':
         useGitignore = true;
@@ -76,4 +75,4 @@ const ftyPack = () => {
   }
 };
 
-ftyPack();
+runPack(args);

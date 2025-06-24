@@ -1,16 +1,14 @@
-import ftyUtils from './index';
+#!/usr/bin/env node
+import { unpackDirectory, fromYaml } from './index'; // Импортируем из index
 import * as path from 'path';
 import * as fs from 'fs';
 
-const { unpackDirectory, fromYaml } = ftyUtils;
-
-// Парсинг аргументов командной строки
 const args = process.argv.slice(2);
 
-const ftyUnpack = () => {
-  if (args.length === 0 || args[0] === '-h' || args[0] === '--help') {
+const runUnpack = (cliArgs: string[]) => {
+  if (cliArgs.length === 0 || cliArgs[0] === '-h' || cliArgs[0] === '--help') {
     console.log(`
-      Usage: node fty-unpack.js <fty_file_path> [options]
+      Usage: fty-unpack <fty_file_path> [options]
 
       Options:
         -o, --output <directory>  Output directory path (default: unpacked_<file_name_without_ext>)
@@ -19,15 +17,15 @@ const ftyUnpack = () => {
     process.exit(0);
   }
 
-  const ftyFilePath = path.resolve(args[0]);
+  const ftyFilePath = path.resolve(cliArgs[0]);
   let outputPath: string | undefined;
 
-  for (let i = 1; i < args.length; i++) {
-    const arg = args[i];
+  for (let i = 1; i < cliArgs.length; i++) {
+    const arg = cliArgs[i];
     switch (arg) {
       case '-o':
       case '--output':
-        outputPath = path.resolve(args[++i]);
+        outputPath = path.resolve(cliArgs[++i]);
         break;
       default:
         console.warn(`Unknown option: ${arg}. Ignoring.`);
@@ -63,4 +61,4 @@ const ftyUnpack = () => {
   }
 };
 
-ftyUnpack();
+runUnpack(args);

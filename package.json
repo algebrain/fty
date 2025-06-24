@@ -3,18 +3,23 @@
   "version": "1.0.0",
   "description": "Utilities to pack and unpack directories using FTY format",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "fty-pack": "./dist/fty-pack.js",
+    "fty-unpack": "./dist/fty-unpack.js"
+  },
   "scripts": {
     "build": "tsc",
-    "start": "node dist/index.js",
-    "fty-pack": "node dist/fty-pack.js",
-    "fty-unpack": "node dist/fty-unpack.js"
+    "test": "node dist/test.js"
   },
   "keywords": [
     "fty",
     "yaml",
     "file-system",
     "pack",
-    "unpack"
+    "unpack",
+    "cli",
+    "llm"
   ],
   "author": "",
   "license": "MIT",
@@ -22,8 +27,6 @@
     "@types/js-yaml": "^4.0.9",
     "@types/minimatch": "^5.0.0",
     "@types/node": "^20.0.0",
-    "js-yaml": "^4.0.0",
-    "minimatch": "^9.0.0",
     "typescript": "^5.0.0"
   },
   "dependencies": {

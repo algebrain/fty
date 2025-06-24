@@ -1,8 +1,6 @@
-import ftyUtils from './index';
+import { packDirectory, unpackDirectory, toYaml, fromYaml } from './index'; // Импорт напрямую из index
 import * as path from 'path';
 import * as fs from 'fs';
-
-const { packDirectory, unpackDirectory, toYaml, fromYaml } = ftyUtils;
 
 const testDir = 'test_project';
 const packedFilePath = 'packed_project.yaml';
