@@ -1,0 +1,599 @@
+- name: package.json
+  data: |
+    {
+      "name": "fty-utils",
+      "version": "1.0.0",
+      "description": "Utilities to pack and unpack directories using FTY format",
+      "main": "dist/index.js",
+      "types": "dist/index.d.ts",
+      "bin": {
+        "fty-pack": "./dist/fty-pack.js",
+        "fty-unpack": "./dist/fty-unpack.js"
+      },
+      "scripts": {
+        "build": "tsc",
+        "test": "node dist/test.js",
+        "fty-pack": "fty-pack . -o package.fty.yaml --gitignore -i \".git,node_modules,dist,pnpm-lock.yaml,LICENSE\"",
+        "fty-unpack": "fty-unpack package.fty.yaml -o ."
+      },
+      "keywords": [
+        "fty",
+        "yaml",
+        "file-system",
+        "pack",
+        "unpack",
+        "cli",
+        "llm"
+      ],
+      "author": "",
+      "license": "MIT",
+      "devDependencies": {
+        "@types/js-yaml": "^4.0.9",
+        "@types/minimatch": "^5.0.0",
+        "@types/node": "^20.0.0",
+        "fty-utils": "^1.0.0",
+        "typescript": "^5.0.0"
+      },
+      "dependencies": {
+        "js-yaml": "^4.0.0",
+        "minimatch": "^9.0.0"
+      },
+      "files": [
+        "dist/",
+        "README.md",
+        "LICENSE"
+      ]
+    }
+- name: README.md
+  data: |
+    -----
+
+    # FTY Utilities
+
+    ## Introduction
+
+    **FTY Utilities** is a set of TypeScript tools designed to pack and unpack directory structures into a custom, human-readable YAML-based format called **FileTree YAML (FTY)**. This format makes it easy to serialize and deserialize entire project structures or individual folders, offering a clear, hierarchical representation of your file system.
+
+    ---
+
+    ## Motivation: Bridging Projects to LLM Chats
+
+    In the evolving landscape of large language models (LLMs), effectively communicating an entire project's context is crucial, especially when working directly within **LLM chat interfaces**. Copying and pasting individual files one by one into a chat is cumbersome, error-prone, and often leads to an incomplete understanding by the AI.
+
+    FTY Utilities offers an elegant solution to this challenge by providing a **single, human-readable YAML representation of your entire project's structure and content**. For **small to medium-sized projects**, this means you can:
+
+    * **Provide Full Context with Ease:** Instead of manually assembling bits and pieces, simply pack your project into an FTY file and paste its YAML content directly into an LLM chat. This gives the AI immediate access to the complete file hierarchy, individual file contents, and even `.gitignore` rules, allowing for a much deeper and more accurate understanding of your codebase.
+    * **Enhance AI Understanding and Output:** With comprehensive context, LLMs can perform better code reviews, generate more relevant code snippets, identify dependencies, suggest refactoring, or even help debug issues within the project's ecosystem.
+    * **Streamline Iteration:** Quickly pack, paste, get AI feedback, make changes, and repeat. This speeds up the development cycle by reducing the friction of context switching and manual data transfer.
+    * **Facilitate Sharing:** Share an entire project's snapshot in a single, versionable text file, which can then be easily consumed by another developer or directly by an LLM.
+
+    FTY effectively transforms a complex directory into a manageable, shareable, and AI-consumable text block, making your interactions with LLM chat interfaces significantly more productive and powerful.
+
+    ---
+
+    ## FTY Format Specification
+
+    The core of these utilities is the FTY format itself. You can find detailed specifications of the FTY format in both English and Russian:
+
+    * **English Specification:** [https://rentry.co/65dfo4ed](https://rentry.co/65dfo4ed)
+    * **Russian Specification:** [https://rentry.co/2w6nz67k](https://rentry.co/2w6nz67k)
+
+    -----
+
+    ## Features
+
+    * **Pack Directories:** Convert a physical directory into an FTY-formatted YAML string or file.
+    * **Unpack FTY:** Reconstruct a physical directory from an FTY-formatted YAML string or file.
+    * **Flexible Ignoring:** Specify files and folders to ignore during packing using custom patterns.
+    * **`.gitignore` Support:** Automatically integrate `.gitignore` rules for seamless project packing.
+    * **Compact & Readable Code:** Written in TypeScript, favoring arrow functions and object-returning functions for clean, maintainable code.
+
+    -----
+
+    ## Installation
+
+    **In your project where you want to use FTY Utilities:**
+
+    1.  **Install FTY Utilities** as a development dependency:
+        ```bash
+        npm install --save-dev fty-utils
+        # or
+        pnpm add --save-dev fty-utils
+        ```
+
+    -----
+
+    ## Usage
+
+    ### Configure Your `package.json`
+
+    Add `fty-pack` and `fty-unpack` scripts to your project's `package.json` for easy access:
+
+    ```json
+    {
+      "name": "my-project",
+      "version": "1.0.0",
+      "scripts": {
+        "fty-pack": "fty-pack . -o package.fty.yaml --gitignore -i \".git,node_modules,dist,pnpm-lock.yaml\"",
+        "fty-unpack": "fty-unpack package.fty.yaml -o ."
+      },
+      "devDependencies": {
+        "fty-utils": "^1.0.0"
+      }
+    }
+    ```
+    * The `fty-pack` script will pack the current directory (`.`) into `package.fty.yaml`, ignoring typical development artifacts (`node_modules`, `dist`), and respecting `.gitignore` rules.
+    * The `fty-unpack` script will unpack `package.fty.yaml` back into the current directory.
+
+    ### Packing a Directory
+
+    From your project's root directory:
+
+    ```bash
+    npm run fty-pack
+    # or
+    pnpm run fty-pack
+    ```
+
+    You can also use `npx` (or `pnpm dlx`) to run the commands directly without defining them in `package.json` scripts:
+
+    ```bash
+    npx fty-pack <directory_path> [options]
+    # Example: npx fty-pack . -o my_project.fty.yaml --gitignore -i node_modules,dist
+    ```
+
+    **CLI Options for `fty-pack`:**
+
+    * `<directory_path>`: The path to the directory you want to pack. This is the **only required argument**.
+    * `-o, --output <file>`: Specifies the output FTY file path. If omitted, the default is `<directory_name>.fty.yaml` in the current working directory.
+    * `-i, --ignore <patterns>`: A comma-separated list of patterns (e.g., `"node_modules,dist"`) to ignore during packing. These patterns are relative to the `<directory_path>`.
+    * `--gitignore`: If present, the packer will read the `.gitignore` file in the `<directory_path>` and apply its rules. The `.gitignore` file itself will be ignored.
+    * `-h, --help`: Display the help message.
+
+    ### Unpacking an FTY File
+
+    From your project's root directory:
+
+    ```bash
+    npm run fty-unpack
+    # or
+    pnpm run fty-unpack
+    ```
+
+    Or using `npx` (or `pnpm dlx`):
+
+    ```bash
+    npx fty-unpack <fty_file_path> [options]
+    # Example: npx fty-unpack package.fty.yaml -o .
+    ```
+
+    **CLI Options for `fty-unpack`:**
+
+    * `<fty_file_path>`: The path to the FTY YAML file you want to unpack. This is the **only required argument**.
+    * `-o, --output <directory>`: Specifies the target directory for unpacking. If omitted, the default is `unpacked_<file_name_without_ext>` in the current working directory (e.g., `unpacked_my_project`).
+    * `-h, --help`: Display the help message.
+
+    -----
+
+    ## Development of `fty-utils`
+
+    If you are developing `fty-utils` itself:
+
+    1.  **Clone the repository.**
+    2.  **Install dependencies:** `npm install` (or `pnpm install`).
+    3.  **Build the utilities:** `npm run build` (or `npx tsc`). This will compile the TypeScript source files in `src/` into JavaScript files in `dist/`.
+    4.  **Run tests:** `npm run test`.
+
+    Feel free to explore the `src/index.ts` file for the core `packDirectory` and `unpackDirectory` logic. Contributions, bug reports, and feature requests are welcome!
+
+    -----
+- name: spec
+  data:
+    - name: en.md
+      data: |
+        ## FileTree YAML (FTY)
+
+        **Overview**
+
+        FileTree YAML (FTY) is a human-readable, hierarchical data format designed for representing file systems. It leverages standard YAML structures to describe files and directories, allowing for easy serialization and deserialization of entire project structures or individual folders.
+
+        **Core Principles**
+
+        Every element within the file system (whether a file or a folder) is represented as a **YAML object** (equivalent to a JSON object) with two mandatory fields:
+
+        1.  **`name`** (string): The name of the file or folder.
+        2.  **`data`** (string or array):
+                * If the element is a **file**, the `data` field contains a **string** with the complete content of that file.
+                * If the element is a **folder** (directory), the `data` field contains an **array** of YAML objects. Each object in this array represents a nested file or folder, following the same FTY structure.
+
+        **Example Structure**
+
+        ```yaml
+        - name: root-folder
+          data:
+            - name: file1.txt
+              data: This is the content of the first file.
+            - name: sub-folder
+              data:
+                - name: file2.js
+                  data: |
+                    console.log("Hello from file2.js");
+                - name: empty-folder
+                  data: [] # An empty folder
+        ```
+
+        **Features and Recommendations**
+
+        * **Encoding:** UTF-8 is recommended for file contents and names.
+        * **Empty Folders:** Empty folders are represented by a `data` array with zero elements (`[]`).
+        * **Multiline Content:** For files with multiline content, it's recommended to use YAML block style indicators (e.g., `|` for a literal block, `>` for a folded block) to improve readability.
+        * **Root Element:** The root of an FTY document is typically an array containing one or more top-level objects, representing root folders or files.
+    - name: ru.md
+      data: |
+        ## FileTree YAML (FTY)
+
+        **Обзор**
+
+        FileTree YAML (FTY) — это легкочитаемый иерархический формат данных, предназначенный для представления файловых систем. Он использует стандартные структуры YAML для описания файлов и директорий, что позволяет легко сериализовать и десериализовать целые структуры проектов или отдельных папок.
+
+        **Основные принципы**
+
+        Каждый элемент в файловой системе (будь то файл или папка) представляется как **YAML-объект** (эквивалент JSON-объекта) с двумя обязательными полями:
+
+        1.  **`name`** (строка): Имя файла или папки.
+        2.  **`data`** (строка или массив):
+                * Если элемент является **файлом**, поле `data` содержит **строку** с полным содержимым этого файла.
+                * Если элемент является **папкой** (директорией), поле `data` содержит **массив** YAML-объектов. Каждый объект в этом массиве представляет собой вложенный файл или папку, следуя той же структуре FTY.
+
+        **Пример структуры**
+
+        ```yaml
+        - name: root-folder
+          data:
+            - name: file1.txt
+              data: Это содержимое первого файла.
+            - name: sub-folder
+              data:
+                - name: file2.js
+                  data: |
+                    console.log("Hello from file2.js");
+                - name: empty-folder
+                  data: [] # Пустая папка
+        ```
+
+        **Особенности и рекомендации**
+
+        * **Кодировка:** Рекомендуется использовать UTF-8 для содержимого файлов и имен.
+        * **Пустые папки:** Пустые папки представляются массивом `data` с нулевым количеством элементов (`[]`).
+        * **Многострочное содержимое:** Для файлов с многострочным содержимым рекомендуется использовать блочные индикаторы стиля YAML (например, `|` для буквального блока, `>` для сложенного блока) для улучшения читаемости.
+        * **Корневой элемент:** Корневым элементом FTY-документа обычно является массив, содержащий один или несколько объектов верхнего уровня, представляющих корневые папки или файлы.
+- name: src
+  data:
+    - name: fty-pack.ts
+      data: |
+        #!/usr/bin/env node
+        import { packDirectory, toYaml } from './index'; // Импортируем из index
+        import * as path from 'path';
+        import * as fs from 'fs';
+
+        const args = process.argv.slice(2);
+
+        const runPack = (cliArgs: string[]) => {
+          if (cliArgs.length === 0 || cliArgs[0] === '-h' || cliArgs[0] === '--help') {
+            console.log(`
+              Usage: fty-pack <directory_path> [options]
+
+              Options:
+                -o, --output <file>    Output FTY file path (default: <directory_name>.fty.yaml)
+                -i, --ignore <patterns>  Comma-separated list of patterns to ignore (e.g., "node_modules,dist")
+                --gitignore            Use .gitignore file for ignore patterns
+                -h, --help             Show this help message
+            `);
+            process.exit(0);
+          }
+
+          const directoryPathArg = cliArgs[0];
+          const directoryPath = path.resolve(directoryPathArg);
+          let outputPath: string | undefined;
+          let ignorePatterns: string[] = [];
+          let useGitignore = false;
+
+          for (let i = 1; i < cliArgs.length; i++) {
+            const arg = cliArgs[i];
+            switch (arg) {
+              case '-o':
+              case '--output':
+                outputPath = path.resolve(cliArgs[++i]);
+                break;
+              case '-i':
+              case '--ignore':
+                ignorePatterns = cliArgs[++i].split(',').map(p => p.trim()).filter(p => p.length > 0);
+                break;
+              case '--gitignore':
+                useGitignore = true;
+                break;
+              default:
+                console.warn(`Unknown option: ${arg}. Ignoring.`);
+            }
+          }
+
+          if (!fs.existsSync(directoryPath) || !fs.statSync(directoryPath).isDirectory()) {
+            console.error(`Error: Directory not found or is not a directory: ${directoryPath}`);
+            process.exit(1);
+          }
+
+          const defaultOutputFileName = `${path.basename(directoryPath)}.fty.yaml`;
+          outputPath = outputPath || path.join(process.cwd(), defaultOutputFileName);
+
+          console.log(`Packing directory: ${directoryPath}`);
+          console.log(`Output to: ${outputPath}`);
+          if (ignorePatterns.length > 0) {
+            console.log(`Ignoring patterns: ${ignorePatterns.join(', ')}`);
+          }
+          if (useGitignore) {
+            console.log(`Using .gitignore`);
+          }
+
+          try {
+            const packedContent = packDirectory(directoryPath, {
+              ignore: ignorePatterns,
+              useGitignore: useGitignore
+            });
+            const yamlString = toYaml(packedContent);
+            fs.writeFileSync(outputPath, yamlString, 'utf8');
+            console.log('Packing complete successfully!');
+          } catch (error: any) {
+            console.error(`Error during packing: ${error.message}`);
+            process.exit(1);
+          }
+        };
+
+        runPack(args);
+    - name: fty-unpack.ts
+      data: |
+        #!/usr/bin/env node
+        import { unpackDirectory, fromYaml } from './index'; // Импортируем из index
+        import * as path from 'path';
+        import * as fs from 'fs';
+
+        const args = process.argv.slice(2);
+
+        const runUnpack = (cliArgs: string[]) => {
+          if (cliArgs.length === 0 || cliArgs[0] === '-h' || cliArgs[0] === '--help') {
+            console.log(`
+              Usage: fty-unpack <fty_file_path> [options]
+
+              Options:
+                -o, --output <directory>  Output directory path (default: unpacked_<file_name_without_ext>)
+                -h, --help              Show this help message
+            `);
+            process.exit(0);
+          }
+
+          const ftyFilePath = path.resolve(cliArgs[0]);
+          let outputPath: string | undefined;
+
+          for (let i = 1; i < cliArgs.length; i++) {
+            const arg = cliArgs[i];
+            switch (arg) {
+              case '-o':
+              case '--output':
+                outputPath = path.resolve(cliArgs[++i]);
+                break;
+              default:
+                console.warn(`Unknown option: ${arg}. Ignoring.`);
+            }
+          }
+
+          if (!fs.existsSync(ftyFilePath) || !fs.statSync(ftyFilePath).isFile()) {
+            console.error(`Error: FTY file not found or is not a file: ${ftyFilePath}`);
+            process.exit(1);
+          }
+
+          const fileName = path.basename(ftyFilePath);
+          const defaultOutputName = `unpacked_${fileName.split('.').slice(0, -2).join('.') || 'project'}`;
+          outputPath = outputPath || path.join(process.cwd(), defaultOutputName);
+
+          console.log(`Unpacking FTY file: ${ftyFilePath}`);
+          console.log(`Output to: ${outputPath}`);
+
+          try {
+            const yamlString = fs.readFileSync(ftyFilePath, 'utf8');
+            const ftyContent = fromYaml(yamlString);
+
+            if (!Array.isArray(ftyContent)) {
+              console.error('Error: FTY file content is not a valid FTY structure (expected an array at root).');
+              process.exit(1);
+            }
+
+            unpackDirectory(ftyContent, outputPath);
+            console.log('Unpacking complete successfully!');
+          } catch (error: any) {
+            console.error(`Error during unpacking: ${error.message}`);
+            process.exit(1);
+          }
+        };
+
+        runUnpack(args);
+    - name: index.ts
+      data: |
+        import * as fs from 'fs';
+        import * as path from 'path';
+        import * as yaml from 'js-yaml';
+        import { Minimatch } from 'minimatch';
+
+        export type FTYObject = {
+          name: string;
+          data: string | FTYObject[];
+        };
+
+        export type PackOptions = {
+          ignore?: string[];
+          useGitignore?: boolean;
+        };
+
+        const loadGitignore = (dirPath: string): string[] => {
+          const gitignorePath = path.join(dirPath, '.gitignore');
+          if (fs.existsSync(gitignorePath)) {
+            return fs.readFileSync(gitignorePath, 'utf8')
+              .split(/\r?\n/)
+              .filter(line => line.trim() !== '' && !line.startsWith('#'))
+              .map(line => {
+                  if (line.startsWith('/')) return line.substring(1);
+                  return line;
+              });
+          }
+          return [];
+        };
+
+        const shouldIgnore = (entryPath: string, baseDir: string, ignorePatterns: string[]): boolean => {
+          let relativePath = path.relative(baseDir, entryPath);
+          if (relativePath === '') return false;
+
+          const stats = fs.statSync(entryPath);
+          if (stats.isDirectory() && !relativePath.endsWith(path.sep)) {
+              relativePath += path.sep;
+          }
+
+          return ignorePatterns.some(pattern => {
+              const mm = new Minimatch(pattern, { dot: true, matchBase: true });
+              return mm.match(relativePath);
+          });
+        };
+
+        export const packDirectory = (dirPath: string, options: PackOptions = {}): FTYObject[] => {
+          const ignorePatterns: string[] = [...(options.ignore || [])];
+
+          if (options.useGitignore) {
+            ignorePatterns.push(...loadGitignore(dirPath));
+          }
+
+          const processEntry = (entryPath: string, baseDirPath: string): FTYObject | null => {
+            const stats = fs.statSync(entryPath);
+            const entryName = path.basename(entryPath);
+
+            if (entryName === '.gitignore' && options.useGitignore) {
+                return null;
+            }
+
+            if (shouldIgnore(entryPath, baseDirPath, ignorePatterns)) {
+              return null;
+            }
+
+            if (stats.isFile()) {
+              let content = fs.readFileSync(entryPath, 'utf8');
+              content = content.replace(/\r\n/g, '\n');
+              return { name: entryName, data: content };
+            } else if (stats.isDirectory()) {
+              const children = fs.readdirSync(entryPath)
+                .map(childName => processEntry(path.join(entryPath, childName), baseDirPath))
+                .filter(Boolean) as FTYObject[];
+              return { name: entryName, data: children };
+            }
+            return null;
+          };
+
+          return fs.readdirSync(dirPath)
+            .map(entryName => processEntry(path.join(dirPath, entryName), dirPath))
+            .filter(Boolean) as FTYObject[];
+        };
+
+        export const unpackDirectory = (ftyContent: FTYObject[], targetPath: string): void => {
+          if (!fs.existsSync(targetPath)) {
+            fs.mkdirSync(targetPath, { recursive: true });
+          }
+
+          ftyContent.forEach(item => {
+            const itemPath = path.join(targetPath, item.name);
+            if (typeof item.data === 'string') {
+              fs.writeFileSync(itemPath, item.data);
+            } else if (Array.isArray(item.data)) {
+              fs.mkdirSync(itemPath, { recursive: true });
+              unpackDirectory(item.data, itemPath);
+            }
+          });
+        };
+
+        export const toYaml = (data: FTYObject[]) => yaml.dump(data, {
+          styles: {
+            'tag:yaml.org,2002:str': 'literal'
+          },
+          lineWidth: -1,
+          noRefs: true
+        });
+
+        export const fromYaml = (yamlString: string) => yaml.load(yamlString) as FTYObject[];
+    - name: test.ts
+      data: |
+        import { packDirectory, unpackDirectory, toYaml, fromYaml } from './index'; // Импорт напрямую из index
+        import * as path from 'path';
+        import * as fs from 'fs';
+
+        const testDir = 'test_project';
+        const packedFilePath = 'packed_project.yaml';
+        const unpackedDir = 'unpacked_project';
+
+        // Clean up previous test runs
+        const cleanup = () => {
+          if (fs.existsSync(testDir)) fs.rmSync(testDir, { recursive: true, force: true });
+          if (fs.existsSync(packedFilePath)) fs.rmSync(packedFilePath, { force: true });
+          if (fs.existsSync(unpackedDir)) fs.rmSync(unpackedDir, { recursive: true, force: true });
+        };
+
+        cleanup();
+
+        console.log('Creating test project...');
+        fs.mkdirSync(path.join(testDir, 'src'), { recursive: true });
+        fs.writeFileSync(path.join(testDir, 'package.json'), JSON.stringify({ name: 'test-project' }, null, 2));
+        fs.writeFileSync(path.join(testDir, 'src', 'index.ts'), 'console.log("Hello FTY!");');
+        fs.writeFileSync(path.join(testDir, '.gitignore'), `
+        # Ignore node_modules
+        node_modules/
+        # Ignore temporary files
+        *.tmp
+        `);
+        fs.writeFileSync(path.join(testDir, 'temp.tmp'), 'This is a temporary file.');
+        fs.mkdirSync(path.join(testDir, 'node_modules'), { recursive: true });
+        fs.writeFileSync(path.join(testDir, 'node_modules', 'some_module.js'), '// Some module code');
+
+
+        console.log('Packing directory...');
+        const packed = packDirectory(testDir, { useGitignore: true });
+        const yamlString = toYaml(packed);
+        fs.writeFileSync(packedFilePath, yamlString);
+        console.log(`Directory packed to ${packedFilePath}`);
+        console.log('Packed content:');
+        console.log(yamlString);
+
+
+        console.log('Unpacking directory...');
+        const loadedFty = fromYaml(fs.readFileSync(packedFilePath, 'utf8'));
+        unpackDirectory(loadedFty, unpackedDir);
+        console.log(`Directory unpacked to ${unpackedDir}`);
+
+        // Basic verification
+        console.log('\nVerification:');
+        console.log(`Does ${unpackedDir}/package.json exist?`, fs.existsSync(path.join(unpackedDir, 'package.json')));
+        console.log(`Does ${unpackedDir}/src/index.ts exist?`, fs.existsSync(path.join(unpackedDir, 'src', 'index.ts')));
+        console.log(`Does ${unpackedDir}/temp.tmp exist? (Should be false)`, fs.existsSync(path.join(unpackedDir, 'temp.tmp')));
+        console.log(`Does ${unpackedDir}/node_modules exist? (Should be false)`, fs.existsSync(path.join(unpackedDir, 'node_modules')));
+
+        cleanup();
+        console.log('\nTest complete. Cleaned up.');
+- name: tsconfig.json
+  data: |
+    {
+        "compilerOptions": {
+        "target": "es2016",
+        "module": "commonjs",
+        "outDir": "./dist",
+        "rootDir": "./src",
+        "strict": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "declaration": true
+        },
+        "include": ["src/**/*.ts"],
+        "exclude": ["node_modules", "dist"]
+    }
