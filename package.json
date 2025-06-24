@@ -32,5 +32,9 @@
   "dependencies": {
     "js-yaml": "^4.0.0",
     "minimatch": "^9.0.0"
-  }
+  },
+  "files": [
+    "dist/",
+    "README.md"
+  ]
 }
