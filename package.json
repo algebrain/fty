@@ -10,7 +10,9 @@
   },
   "scripts": {
     "build": "tsc",
-    "test": "node dist/test.js"
+    "test": "node dist/test.js",
+    "fty-pack": "fty-pack . -o package.fty.yaml --gitignore -i \".git,node_modules,dist,pnpm-lock.yaml\"",
+    "fty-unpack": "fty-unpack package.fty.yaml -o ."
   },
   "keywords": [
     "fty",
@@ -27,6 +29,7 @@
     "@types/js-yaml": "^4.0.9",
     "@types/minimatch": "^5.0.0",
     "@types/node": "^20.0.0",
+    "fty-utils": "^1.0.0",
     "typescript": "^5.0.0"
   },
   "dependencies": {

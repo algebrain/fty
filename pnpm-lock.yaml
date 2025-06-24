@@ -24,6 +24,9 @@ importers:
       '@types/node':
         specifier: ^20.0.0
         version: 20.19.1
+      fty-utils:
+        specifier: ^1.0.0
+        version: 1.0.0
       typescript:
         specifier: ^5.0.0
         version: 5.8.3
@@ -47,6 +50,10 @@ packages:
 
   brace-expansion@2.0.2:
     resolution: {integrity: sha512-Jt0vHyM+jmUBqojB7E1NIYadt0vI0Qxjxd2TErW94wDz+E2LAm5vKMXXwg6ZZBTHPuUlDgQHKXvjGBdfcF1ZDQ==}
+
+  fty-utils@1.0.0:
+    resolution: {integrity: sha512-DyCzogVcDjbvktdbDEyfpS89brNTRcvAVy36wQlNdl793DBy4nbSQGyJwOfaiOKiidRNO5AnlRz0DakxfGCMjg==}
+    hasBin: true
 
   js-yaml@4.1.0:
     resolution: {integrity: sha512-wpxZs9NoxZaJESJGIZTyDEaYpl0FKSA+FB9aJiyemKhMwkxQg63h4T1KJgUGHpTqPDNRcmmYLugrRjJlBtWvRA==}
@@ -81,6 +88,11 @@ snapshots:
   brace-expansion@2.0.2:
     dependencies:
       balanced-match: 1.0.2
+
+  fty-utils@1.0.0:
+    dependencies:
+      js-yaml: 4.1.0
+      minimatch: 9.0.5
 
   js-yaml@4.1.0:
     dependencies:
