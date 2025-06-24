@@ -6,7 +6,21 @@
 
 **FTY Utilities** is a set of TypeScript tools designed to pack and unpack directory structures into a custom, human-readable YAML-based format called **FileTree YAML (FTY)**. This format makes it easy to serialize and deserialize entire project structures or individual folders, offering a clear, hierarchical representation of your file system.
 
------
+---
+
+## Motivation: Bridging Projects to LLMs
+
+In the era of large language models (LLMs), the ability to seamlessly integrate and analyze entire codebases or project structures becomes increasingly valuable. Traditional methods of copying and pasting code snippets are insufficient for complex projects. FTY Utilities addresses this by providing a compact and structured way to represent an entire project, including its directory hierarchy and file contents, within a single YAML file.
+
+This format is ideal for:
+
+* **Context for LLMs:** Providing a comprehensive view of a project to an LLM, enabling it to understand context, dependencies, and overall architecture for better code generation, refactoring, or bug detection.
+* **Version Control for LLMs:** Effectively "versioning" project snapshots that can be fed into an LLM, allowing for more consistent and reproducible interactions.
+* **Sharing and Archiving:** Easily sharing a complete project structure in a single, human-readable file, or archiving project states in a compact format.
+
+By converting complex directory structures into a streamlined FTY representation, we empower LLMs to work with entire projects, not just isolated files, unlocking new possibilities for AI-assisted development.
+
+---
 
 ## FTY Format Specification
 
