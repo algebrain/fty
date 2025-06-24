@@ -11,7 +11,7 @@
   "scripts": {
     "build": "tsc",
     "test": "node dist/test.js",
-    "fty-pack": "fty-pack . -o package.fty.yaml --gitignore -i \".git,node_modules,dist,pnpm-lock.yaml,LICENSE\"",
+    "fty-pack": "fty-pack . -o package.fty.yaml --gitignore -i \".git,node_modules,dist,pnpm-lock.yaml,LICENSE,package.fty.yaml\"",
     "fty-unpack": "fty-unpack package.fty.yaml -o ."
   },
   "keywords": [
